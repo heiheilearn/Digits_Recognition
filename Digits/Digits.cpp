@@ -1,16 +1,5 @@
-#include<opencv2/imgproc.hpp>
-#include<opencv2/highgui.hpp>
-#include<opencv2/imgcodecs.hpp>
 #include<iostream>
-
-using namespace std;
-using namespace cv;
-
-struct Card
-{
-	Mat mat;
-	Rect rect;
-};
+#include"Digits.h"
 
 
 bool Get_Template(Mat Img, vector<Card>& Cards) {
