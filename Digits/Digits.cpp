@@ -67,8 +67,8 @@ bool Cut_BankCard(Mat B_Img, vector<Card>& Bank_ROI) {
 
 	Mat kernel_ = getStructuringElement(MORPH_RECT, Size(15, 5));
 	morphologyEx(B_ImgInRange, B_ImgClose, MORPH_CLOSE, kernel_);
-	imshow("B_Close", B_ImgClose);
-	waitKey(0);
+	/*imshow("B_Close", B_ImgClose);
+	waitKey(0);*/
 	vector<vector<Point>>contours;
 	findContours(B_ImgClose, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 	for (int i = 0; i < contours.size(); i++)
@@ -107,10 +107,10 @@ bool Cut_BankCard(Mat B_Img, vector<Card>& Bank_ROI) {
 			}
 		}
 	}
-	for (int i = 0; i < Bank_ROI.size(); i++) {
+	/*for (int i = 0; i < Bank_ROI.size(); i++) {
 		imshow("Bank_ROI", Bank_ROI[i].mat);
 		waitKey(0);
-	}
+	}*/
 	return true;
 
 
@@ -154,49 +154,7 @@ bool Cut_Num_ROIS(vector<Card>& Bank_ROI, vector<Card>& Num_ROIs) {
 	//cout << Num_ROIs.size() << endl;
 	return true;
 }
-
-
-int main() {
-
-	string Template_path = "C:\\Users\\Rong\\Desktop\\Digits\\ocr_a_reference.png";
-	Mat Img = imread(Template_path);
-	//cout << "Img" << Img.size() << endl;
-	vector<Card> Cards;
-	Get_Template(Img, Cards);
-	/*for (int i = 0; i < Cards.size(); i++) {
-		imshow("test", Cards[i].mat);
-		waitKey(0);
-	}*/
-
-	string Bank_Card_path = "C:\\Users\\Rong\\Desktop\\Digits\\credit_card_01.png";
-	Mat B_Img = imread(Bank_Card_path);
-	resize(B_Img, B_Img, Size(442, 279), 1, 1, INTER_LINEAR);
-	cout << B_Img.size() << endl;
-	vector<Card> Bank_ROI;
-	Cut_BankCard(B_Img, Bank_ROI);
-	vector<Card> Num_ROIs;
-	int flag = Cut_Num_ROIS(Bank_ROI, Num_ROIs);
-	//cout << "flag " << flag << endl;
-	/*for (int i = 0; i < Bank_ROI.size(); i++) {
-		imshow("test", Bank_ROI[i].mat);
-		waitKey(0);
-	}*/
-
-	/*for (int i = 0; i < Num_ROIs.size(); i++) {
-		imshow("test", Num_ROIs[i].mat);
-		waitKey(0);
-	}*/
-	/*waitKey(0); */
-
-	vector<int> label;
-	for (int i = 0; i < 10; i++) {
-		label.push_back(i);
-	}
-	/*for (int i = 0; i < 10; i++) {
-		cout << label[i] << endl;
-	}*/
-
-	vector<int> results;
+void Get_Results(vector<Card>& Cards, vector<Card>& Bank_ROI, vector<Card>& Num_ROIs, vector<int>& results) {
 	for (int i = 0; i < Num_ROIs.size(); i++)
 	{
 		//将字符resize成合适大小，利于识别
@@ -239,7 +197,50 @@ int main() {
 		//waitKey(0);
 		results.push_back(maxIndex);//将匹配结果进行保存
 	}
+}
 
+int main() {
+
+	string Template_path = "C:\\Users\\Rong\\Desktop\\Digits\\ocr_a_reference.png";
+	Mat Img = imread(Template_path);
+	//cout << "Img" << Img.size() << endl;
+	vector<Card> Cards;
+	Get_Template(Img, Cards);
+	/*for (int i = 0; i < Cards.size(); i++) {
+		imshow("test", Cards[i].mat);
+		waitKey(0);
+	}*/
+
+	string Bank_Card_path = "C:\\Users\\Rong\\Desktop\\Digits\\credit_card_01.png";
+	Mat B_Img = imread(Bank_Card_path);
+	resize(B_Img, B_Img, Size(442, 279), 1, 1, INTER_LINEAR);
+	cout << B_Img.size() << endl;
+	vector<Card> Bank_ROI;
+	Cut_BankCard(B_Img, Bank_ROI);
+	vector<Card> Num_ROIs;
+	Cut_Num_ROIS(Bank_ROI, Num_ROIs);
+	//cout << "flag " << flag << endl;
+	/*for (int i = 0; i < Bank_ROI.size(); i++) {
+		imshow("test", Bank_ROI[i].mat);
+		waitKey(0);
+	}*/
+
+	/*for (int i = 0; i < Num_ROIs.size(); i++) {
+		imshow("test", Num_ROIs[i].mat);
+		waitKey(0);
+	}*/
+	/*waitKey(0); */
+
+	vector<int> label;
+	for (int i = 0; i < 10; i++) {
+		label.push_back(i);
+	}
+	/*for (int i = 0; i < 10; i++) {
+		cout << label[i] << endl;
+	}*/
+
+	vector<int> results;
+	Get_Results(Cards, Bank_ROI, Num_ROIs, results);
 	for (int i = 0; i < results.size(); i++) {
 		cout << results[i] << endl;
 	}
